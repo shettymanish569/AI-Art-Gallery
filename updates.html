@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribe for Updates</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+
+<body>
+    <div class="hero">
+        <div class="head">
+            <span class="headleft">
+                <a href="index.html">Home</a>
+            </span>
+        </div>
+        <h1>For Latest Updates!!!</h1>
+        <br>
+        <p>Subscribe for more details</p>
+        <form id="subscribe-form">
+            <input type="email" name="email" id="email" placeholder="Enter your Email-Id" required>
+            <button type="submit" aria-label="Subscribe">
+                <img src="./images/icon.png" width="50px" alt="Subscribe">
+            </button>
+        </form>
+        <span id="msg"></span>
+    </div>
+
+    <script>
+        document.getElementById('subscribe-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const msg = document.getElementById('msg');
+
+            try {
+                const response = await fetch('http://localhost:3001/addemail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    msg.textContent = 'Email registered!';
+                    msg.style.color = 'green';
+                } else if (response.status === 400) {
+                    msg.textContent = 'Email is already registered!!';
+                    msg.style.color = 'red';
+                } else {
+                    const errorText = await response.text();
+                    msg.textContent = `Error: ${errorText}`;
+                    msg.style.color = 'red';
+                }
+            } catch (error) {
+                msg.textContent = 'Error: Unable to connect to the server.';
+                msg.style.color = 'red';
+                console.error("Error:", error);
+            }
+        });
+    </script>
+</body>
+
+</html>
